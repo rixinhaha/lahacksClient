@@ -1,6 +1,7 @@
 import React from 'react';
 import './Input.css';
 
+
 const Input = (props) => {
     return(
         <form className="form">

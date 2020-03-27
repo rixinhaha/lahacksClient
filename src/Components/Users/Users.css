@@ -1,0 +1,24 @@
+.roomInfo
+{
+    width: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+}
+
+.user
+{
+    padding: 10px;
+    margin-block-start: 0em !important;
+    margin-block-end: 0em !important;
+}
+
+.roomHeader
+{
+    background: rgba(66, 133, 244, 0.5);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}

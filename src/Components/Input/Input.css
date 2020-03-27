@@ -2,15 +2,14 @@
     display: flex;
     border: none;
     margin-block-end: 0em !important;
-    height: 8%;
   }
   
   .input {
     border: none;
-    border-radius: 0;
+    border-bottom-left-radius: 8px;
     padding: 3%;
     width: 80%;
-    font-size: 13px;
+    font-size: 0.8em;
     background: rgba(244, 180, 0, 0.5);
     font-family: 'ABeeZee', sans-serif;
   }
@@ -30,6 +29,7 @@
     text-align: center;
     font-family: 'ABeeZee', sans-serif;
     font-weight: 900;
+    border-bottom-right-radius: 8px;
   }
 
  

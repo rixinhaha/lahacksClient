@@ -2,8 +2,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(66, 133, 244, 0.5);;
-    border-radius: 0px;
+    background: rgba(66, 133, 244, 0.5);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     height: 60px;
     width: 100%;
