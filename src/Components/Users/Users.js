@@ -9,7 +9,7 @@ const Users = (props) => (
         <div className="userWrapper">
             {console.log(props.users)}
             {props.users.map((user,i)=>(
-                <p className="user">{user.userid}</p>
+                <p className="user">{user.name}</p>
             ))}
         </div>
     </div>

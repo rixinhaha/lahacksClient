@@ -1,12 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Messages.css';
-import ScrollToBottom from 'react-scroll-to-bottom';
-import Message from '../Message/Message'
+import Message from '../Message/Message';
 
-const Messages = ({messages, userid}) => (
-        <ScrollToBottom className="messages">
-        {messages.map((message, i) => <div key={i}><Message message={message} userid={userid}/></div>)}
-      </ScrollToBottom>
-)
+
+
+const Messages = (props) => {
+  let myRef=React.createRef();
+  useEffect(()=>{
+    console.log(props.newmessage)
+    if(props.newmessage===true)
+    {
+      var div = myRef.current;
+      div.scrollTop = div.scrollHeight-div.clientHeight;
+    }
+  },[props.messages])
+
+  let handleScroll = (e) => {
+    var element = e.target;
+    console.log(element.scrollTop)
+    if (element.scrollTop===0)
+    {
+      props.loadOldmessages()
+    }
+  }
+  return( 
+    <div ref={myRef}className="messages" onScroll={handleScroll}>
+        {console.log(props.messages)}
+        {props.messages.map((message, i) => <div key={i}>{console.log(message)}<Message message={message} name={props.name}/></div>)}
+    </div>
+  )
+}
 
 export default Messages;

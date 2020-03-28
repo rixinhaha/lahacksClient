@@ -4,7 +4,7 @@ import React from 'react';
 const Message = (props) =>{
     let isSentByUser = false;
     const trimmedName = props.message.user.trim().toLowerCase();
-    if(props.userid === trimmedName)
+    if(props.name === trimmedName)
     {
         isSentByUser=true;
     }

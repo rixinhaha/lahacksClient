@@ -1,35 +1,38 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import NewWindow from 'react-new-window';
 import Chat from './Components/Chat/Chat';
+import Cookies from 'js-cookie';
 
-function App() {
+function App(props) {
   const [popout, setPopout] = useState(false);
-  const [userleave, setLeave] = useState(false);
-  const [userid, setUser] = useState("");
+  const [name, setUser] = useState("");
   const [room, setRoom] = useState("");
   let torender = (
     <h1>
       <label>
         User ID:
-        <input type="text" name="userid" 
+        <input type="text" name="name" 
           onChange={(e)=>{
             setUser(e.target.value)
-            console.log(userid)
+            console.log(name)
           }}
         />
       </label>
       <label>
         Room:
-        <input type="text" name="userid" 
+        <input type="text" name="room" 
           onChange={(e)=>{
             setRoom(e.target.value)
-            console.log(userid)
+            console.log(name)
           }}
         />
       </label>
       <button onClick={()=>{
         setPopout(true)
+        Cookies.set('name', name);
+        Cookies.set('room', room);
+        console.log(Cookies.get('name'))
+        console.log(Cookies.get('room'))
       }}>Join Room</button>
     </h1>
   )
@@ -37,11 +40,7 @@ function App() {
   {
     torender = (
       <div>
-        <NewWindow title='Chatroom'  onUnload={()=>{
-            setPopout(false)
-        }}>
-          <Chat userid={userid} room={room} setLeave={setLeave} setPopout={setPopout}/>
-        </NewWindow>
+        <Chat name={Cookies.get('name')} room={Cookies.get('room')} setPopout={setPopout}/>
       </div>
     )
   }

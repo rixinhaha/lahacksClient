@@ -9,13 +9,75 @@ import Users from "../Users/Users";
 let socket;
 
 const Chat = (props) => {
-    const [userid, setId] = useState(props.userid);
+    const [name, setId] = useState(props.name);
     const [room, setRoom] = useState(props.room);
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState([
+        {
+            user: "tony",
+            text: "something is wrong",
+        },
+        {
+            user: "jackie",
+            text: "weird stuff",
+        },
+        {
+            user: "tony",
+            text: "something is wrong",
+        },
+        {
+            user: "jackie",
+            text: "weird stuff",
+        },
+        {
+            user: "tony",
+            text: "something is wrong",
+        },
+        {
+            user: "jackie",
+            text: "weird stuff",
+        },
+        {
+            user: "tony",
+            text: "something is wrong",
+        },
+        {
+            user: "jackie",
+            text: "weird stuff",
+        },
+        {
+            user: "tony",
+            text: "something is wrong",
+        },
+        {
+            user: "jackie",
+            text: "weird stuff",
+        },
+        {
+            user: "tony",
+            text: "something is wrong",
+        },
+        {
+            user: "jackie",
+            text: "weird stuff",
+        }
+    ]);
+    const [oldmessages, setOldmessages] = useState([
+        {
+            user: "fked up",
+            text: "trwanf",
+        },
+        {
+            user: "jackdjhwjie",
+            text: "weircekwnvlewd stuff",
+        }
+    ]);
+    const [counter, setCounter]=useState(0)
     const ENDPOINT = 'localhost:5000';
-    const [leavechat, setLeave] = useState(false)
+    const [leavechat, setLeave] = useState(false);
     const [users, setUsers] = useState([]);
+    const [newmessage, setNewmessage] = useState(false);
+
 
     let leaveChat = () => {
         setLeave(true);
@@ -29,18 +91,22 @@ const Chat = (props) => {
     useEffect(()=>{
         socket=io(ENDPOINT);
         console.log(socket);
-        socket.emit('join', {userid, room}, ()=>{
+        socket.emit('join', {name, room}, ()=>{
 
         })
         return ()=>{
             if(socket.connected===true)
-            {socket.close();}
+            {
+                socket.emit('disconnect');
+                socket.close();
+            }
         }
-    }, [ENDPOINT, userid, room])
+    }, [ENDPOINT, name, room])
 
     useEffect(()=>{
         socket.on('message', (message)=>{
             setMessages([...messages,message])
+            setNewmessage(true);
         })
     }, [messages]);
 
@@ -55,8 +121,16 @@ const Chat = (props) => {
     const sendMessage = (event) => {
         event.preventDefault();
         if(message){
-            socket.emit('sendMessage', message, ()=>setMessage(''))
+            socket.emit('sendMessage', {text: message, name: name, room: room}, ()=>setMessage(''))
         }
+
+    }
+
+    let loadOldmessages = () => {
+        setMessages([...oldmessages, ...messages]);
+        setCounter(counter+1);
+        setNewmessage(false);
+        console.log(messages)
     }
 
 
@@ -64,7 +138,7 @@ const Chat = (props) => {
         <div className="outerContainer">
             <div className="container">
                 <InfoBar room={room} leaveChat={leaveChat}/>
-                <Messages messages={messages} userid={userid}/>
+                <Messages messages={messages} name={name} oldmessages={oldmessages}  loadOldmessages={loadOldmessages} newmessage={newmessage}/>
                 <Input message={message} sendMessage={sendMessage} setMessage={setMessage}/>
             </div>
             <div style={{
