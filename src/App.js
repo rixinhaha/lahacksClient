@@ -3,7 +3,7 @@ import './App.css';
 import Chat from './Components/Chat/Chat';
 import Cookies from 'js-cookie';
 
-function App(props) {
+function App() {
   const [popout, setPopout] = useState(false);
   const [name, setUser] = useState("");
   const [room, setRoom] = useState("");
@@ -40,10 +40,22 @@ function App(props) {
   {
     torender = (
       <div>
-        <Chat name={Cookies.get('name')} room={Cookies.get('room')} setPopout={setPopout}/>
+        {/* <Chat name={Cookies.get('name')} room={Cookies.get('room')} avatar={Cookies.get('profile_picture')}  setPopout={setPopout}/> */}
+        <Chat name={Cookies.get('name')} room={Cookies.get('room')} avatar={'https://lh4.googleusercontent.com/-jd7DdQQExt8/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOi3jZFNGblsQvf-cydxNFPj125Bg/photo.jpg'}  setPopout={setPopout}/>
       </div>
     )
   }
+  // if(popout===true)
+  // {
+  //   torender=(<div class="loader">
+  //   <div class="loader__bar"></div>
+  //   <div class="loader__bar"></div>
+  //   <div class="loader__bar"></div>
+  //   <div class="loader__bar"></div>
+  //   <div class="loader__bar"></div>
+  //   <div class="loader__ball"></div>
+  // </div>)
+  // }
 
   return (
     <div className="App">

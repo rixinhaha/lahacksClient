@@ -1,5 +1,6 @@
 import React from 'react';
 import './Input.css';
+import { IoIosSend } from "react-icons/io"
 
 
 const Input = (props) => {
@@ -15,7 +16,7 @@ const Input = (props) => {
             />
             <button className="sendButton" onClick={(event)=>{
                 props.sendMessage(event);
-            }}>Send</button>
+            }}><div className="sendIconwrapper"><IoIosSend className="sendIcon"/></div></button>
         </form>
     )
 }

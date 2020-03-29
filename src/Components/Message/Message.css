@@ -23,20 +23,22 @@
     display: flex;
     justify-content: flex-end;
     padding: 0 5%;
-    margin-top: 5px;
+    margin-top: 13px;
   }
   
   .sentText {
-    display: flex;
-    align-items: center;
+    text-align: center;
     font-family: Helvetica;
     color: #828282;
     letter-spacing: 0.3px;
-    font-size: 0.9em;
+    font-size: 0.6em;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    padding-top: 3px;
   }
   
   .pl-10 {
-    padding-left: 10px;
+    padding-left: 7px;
   }
   
   .pr-10 {
@@ -60,9 +62,34 @@
   }
   
   .backgroundBlue {
-    background: rgba(244, 180, 0, 0.25);;
+    background:#f0f0f0;
+    color: honeydew;
   }
   
   .backgroundLight {
-    background: rgba(15, 157, 88, 0.2);
+    background: rgba(244, 180, 0, 0.25);;
   }
+
+  .avatar-wrapper {
+    background: #ffa099;
+    border-radius: 200px;
+    align-content: center;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .avatar-icon {
+    color: honeydew;
+  }
+
+  .message-avatar {
+    width: 100%;
+    height: auto;
+    border-radius: 200px;
+  }
+ 
+
+  

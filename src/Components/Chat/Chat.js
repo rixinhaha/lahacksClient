@@ -5,6 +5,7 @@ import InfoBar from "../InfoBar/InfoBar";
 import Input from "../Input/Input";
 import Messages from "../Messages/Messages";
 import Users from "../Users/Users";
+import {getOldmessages, getOldmessages_firstload} from '../../api';
 
 let socket;
 
@@ -12,95 +13,27 @@ const Chat = (props) => {
     const [name, setId] = useState(props.name);
     const [room, setRoom] = useState(props.room);
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([
-        {
-            user: "tony",
-            text: "something is wrong",
-        },
-        {
-            user: "jackie",
-            text: "weird stuff",
-        },
-        {
-            user: "tony",
-            text: "something is wrong",
-        },
-        {
-            user: "jackie",
-            text: "weird stuff",
-        },
-        {
-            user: "tony",
-            text: "something is wrong",
-        },
-        {
-            user: "jackie",
-            text: "weird stuff",
-        },
-        {
-            user: "tony",
-            text: "something is wrong",
-        },
-        {
-            user: "jackie",
-            text: "weird stuff",
-        },
-        {
-            user: "tony",
-            text: "something is wrong",
-        },
-        {
-            user: "jackie",
-            text: "weird stuff",
-        },
-        {
-            user: "tony",
-            text: "something is wrong",
-        },
-        {
-            user: "jackie",
-            text: "weird stuff",
-        }
-    ]);
-    const [oldmessages, setOldmessages] = useState([
-        {
-            user: "fked up",
-            text: "trwanf",
-        },
-        {
-            user: "jackdjhwjie",
-            text: "weircekwnvlewd stuff",
-        }
-    ]);
+    const [messages, setMessages] = useState([]);
+    const [avatar, setAvatar] = useState(props.avatar)
     const [counter, setCounter]=useState(0)
     const ENDPOINT = 'localhost:5000';
-    const [leavechat, setLeave] = useState(false);
     const [users, setUsers] = useState([]);
     const [newmessage, setNewmessage] = useState(false);
+    const [hasmore, setHasmore] = useState(true); 
+    const [lastid, setLastid] = useState('');
 
-
-    let leaveChat = () => {
-        setLeave(true);
-        props.setPopout(false);
-        // socket.emit('disconnect');
-        // socket.off();
-        if(socket.connected===true)
-        {socket.close();}
-    }
 
     useEffect(()=>{
         socket=io(ENDPOINT);
         console.log(socket);
-        socket.emit('join', {name, room}, ()=>{
-
-        })
-        return ()=>{
-            if(socket.connected===true)
+        //call the api function for first load
+        loadOldmessages_firstload();
+        socket.emit('join', {name, room}, (error)=>{
+            if(error)
             {
-                socket.emit('disconnect');
-                socket.close();
+                alert(error);
             }
-        }
+        })
     }, [ENDPOINT, name, room])
 
     useEffect(()=>{
@@ -121,14 +54,86 @@ const Chat = (props) => {
     const sendMessage = (event) => {
         event.preventDefault();
         if(message){
-            socket.emit('sendMessage', {text: message, name: name, room: room}, ()=>setMessage(''))
+            socket.emit('sendMessage', {text: message, name: name, room: room, avatar: avatar}, ()=>setMessage(''))
         }
 
     }
 
-    let loadOldmessages = () => {
+    let loadOldmessages_firstload = () => {
+        let oldmessagesresponse = getOldmessages_firstload(room, 10)
+        console.log(oldmessagesresponse);
+        let oldmessages = []
+        if(oldmessagesresponse.length===0)
+        {
+            setHasmore(false);
+            return
+        }
+        else if(oldmessagesresponse.length===1)
+        {
+            oldmessages.push({
+                user: oldmessagesresponse[0].author.name,
+                text: oldmessagesresponse[0].content,
+                avatar: oldmessagesresponse[0].author.avatar,
+            })
+            setHasmore(false);
+            return;
+        }
+        oldmessagesresponse.forEach((element, index) => {
+            if (index===0)
+            {
+                setLastid(element._id)
+            }
+            else 
+            {
+                oldmessages.push({
+                    user: element.author.name,
+                    text: element.content,
+                    avatar: element.author.avatar,
+                })
+            }
+        });
         setMessages([...oldmessages, ...messages]);
-        setCounter(counter+1);
+        setNewmessage(false);
+        console.log(messages)
+    }
+
+    let loadOldmessages = () => {
+        let oldmessages = []
+        if(hasmore===true)
+        {
+            let oldmessagesresponse = getOldmessages(room, 5, lastid).oldMessages
+            if(oldmessagesresponse.length===0)
+            {
+                setHasmore(false);
+                return
+            }
+            else if(oldmessagesresponse.length===1)
+            {
+                oldmessages.push({
+                    user: oldmessagesresponse[0].author,
+                    text: oldmessagesresponse[0].content,
+                    avatar: oldmessagesresponse[0].avatar,
+                })
+                setHasmore(false);
+                return;
+            }
+            oldmessagesresponse.forEach((element, index) => {
+                if (index===0)
+                {
+                    setLastid(element._id)
+                }
+                else 
+                {
+                    oldmessages.push({
+                        user: element.author,
+                        text: element.content,
+                        avatar: element.avatar,
+                    })
+                }
+            });
+        }
+        else{return;}
+        setMessages([...oldmessages, ...messages]);
         setNewmessage(false);
         console.log(messages)
     }
@@ -137,14 +142,9 @@ const Chat = (props) => {
     return (
         <div className="outerContainer">
             <div className="container">
-                <InfoBar room={room} leaveChat={leaveChat}/>
-                <Messages messages={messages} name={name} oldmessages={oldmessages}  loadOldmessages={loadOldmessages} newmessage={newmessage}/>
+                <InfoBar room={room}/>
+                <Messages messages={messages} name={name}  loadOldmessages={loadOldmessages} newmessage={newmessage} avatar={avatar}/>
                 <Input message={message} sendMessage={sendMessage} setMessage={setMessage}/>
-            </div>
-            <div style={{
-                width: 110,
-            }}>
-                <Users users={users}/>
             </div>
         </div>
     )

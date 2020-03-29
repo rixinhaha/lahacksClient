@@ -4,7 +4,6 @@
     flex-direction: column;
     justify-content: space-between;
     background: #FFFFFF;
-    border-radius: 8px;
     height: 60%;
     width: 35%;
   }  
@@ -23,7 +22,7 @@
     }
   
     .container {
-      width: 40%;
+      width: 60%;
       height: 80%;
     }
   }
