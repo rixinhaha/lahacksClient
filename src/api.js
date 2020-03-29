@@ -18,11 +18,12 @@ export const getOldmessages = (roomname,num,id) =>
 export const getOldmessages_firstload = (roomname,num) =>
 {
     console.log('here');
-    let URL = `http://localhost:5000/rooms/room1/messages/?num=5`;
+    let URL = `https://youtube-chatroom2.appspot.com/rooms/room1/messages/?num=5`;
     let data = [];
-    axios.get(URL)
+    fetch(URL)
     .then((response)=>{
-        data = response.data;
+        console.log(response)
     })
-    console.log(data)
+    return data;
+    
 }
