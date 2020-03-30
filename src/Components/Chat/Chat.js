@@ -20,7 +20,6 @@ const Chat = (props) => {
     const [hasmore, setHasmore] = useState(true); 
     const [lastid, setLastid] = useState('');
     const [firstLoad, setFirstload] = useState(true)
-    const [oldmsgs, setOldmessages] = useState([])
 
 
     useEffect(()=>{
@@ -37,9 +36,7 @@ const Chat = (props) => {
         })
     }, [ENDPOINT, name, room])
 
-    useEffect(()=>{
-        setMessages([...oldmsgs,...messages])
-    }, [oldmsgs])
+
    
     useEffect(()=>{
         socket.on('message', (message)=>{
