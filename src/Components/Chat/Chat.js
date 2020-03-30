@@ -14,7 +14,7 @@ const Chat = (props) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [avatar, setAvatar] = useState(props.avatar)
-    const ENDPOINT = 'http://localhost:5000/';
+    const ENDPOINT = 'https://learning-extension.herokuapp.com/';
     const [users, setUsers] = useState([]);
     const [newmessage, setNewmessage] = useState('load');
     const [hasmore, setHasmore] = useState(true); 
@@ -51,7 +51,7 @@ const Chat = (props) => {
 
     useEffect(()=>{
         async function firstload(){
-            let oldmessagesresponse = await axios.get(`http://localhost:5000/rooms/${room}/messages?num=${20}`).then(response=>{return response.data})
+            let oldmessagesresponse = await axios.get(`https://learning-extension.herokuapp.com/rooms/${room}/messages?num=${20}`).then(response=>{return response.data})
             oldmessagesresponse = oldmessagesresponse.data
             oldmessagesresponse = oldmessagesresponse.reverse()
             let oldmessages = []
@@ -114,7 +114,7 @@ const Chat = (props) => {
         let oldmessages = []
         if(hasmore===true)
         {
-            let oldmessagesresponse = await axios.get(`http://localhost:5000/rooms/${room}/messages?num=${5}&start_id=${lastid}`).then(response=>{return response.data})
+            let oldmessagesresponse = await axios.get(`https://learning-extension.herokuapp.com/rooms/${room}/messages?num=${5}&start_id=${lastid}`).then(response=>{return response.data})
             oldmessagesresponse = oldmessagesresponse.data
             oldmessagesresponse = oldmessagesresponse.reverse()
             if(oldmessagesresponse.length===0)
