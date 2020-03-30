@@ -4,32 +4,8 @@
     flex-direction: column;
     justify-content: space-between;
     background: #FFFFFF;
-    height: 60%;
-    width: 35%;
+    height: 100vh;
+    width: auto;
   }  
   
-  .outerContainer {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 100vh;
-    background-color: #1A1A1D;
-  }
 
-  @media (min-width: 320px) and (max-width: 480px) {
-    .outerContainer {
-      height: 100%;
-    }
-  
-    .container {
-      width: 60%;
-      height: 80%;
-    }
-  }
-  
-  @media (min-width: 480px) and (max-width: 1200px) {
-    .container {
-      width: 60%;
-      height: 80%;
-    }
-  }

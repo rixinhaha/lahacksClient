@@ -4,8 +4,7 @@ import './Chat.css';
 import InfoBar from "../InfoBar/InfoBar";
 import Input from "../Input/Input";
 import Messages from "../Messages/Messages";
-import Users from "../Users/Users";
-import {getOldmessages, getOldmessages_firstload} from '../../api';
+import axios from 'axios';
 
 let socket;
 
@@ -16,20 +15,22 @@ const Chat = (props) => {
     const [messages, setMessages] = useState([]);
     const [avatar, setAvatar] = useState(props.avatar)
     const [counter, setCounter]=useState(0)
-    const ENDPOINT = 'localhost:5000';
+    const ENDPOINT = 'https://youtube-chatroom2.appspot.com/';
     const [users, setUsers] = useState([]);
-    const [newmessage, setNewmessage] = useState(false);
+    const [newmessage, setNewmessage] = useState('load');
     const [hasmore, setHasmore] = useState(true); 
     const [lastid, setLastid] = useState('');
+    const [firstLoad, setFirstload] = useState(true)
 
 
     useEffect(()=>{
-        socket=io(ENDPOINT);
+        socket=io.connect(ENDPOINT, {
+            transports: ['websocket'],
+            rejectUnauthorized: false
+        });
         console.log(socket);
-        //call the api function for first load
-        loadOldmessages_firstload();
         socket.emit('join', {name, room}, (error)=>{
-            if(error)
+            if(error)//call the api function for first load
             {
                 alert(error);
             }
@@ -39,9 +40,53 @@ const Chat = (props) => {
     useEffect(()=>{
         socket.on('message', (message)=>{
             setMessages([...messages,message])
-            setNewmessage(true);
+            console.log("NEEEEEEEEEEEEEEEEEEW")
+            setNewmessage('new');
         })
     }, [messages]);
+
+    useEffect(()=>{
+        async function firstload(){
+            let oldmessagesresponse = await axios.get(`https://youtube-chatroom2.appspot.com/rooms/${room}/messages?num=${20}`).then(response=>{return response.data})
+            oldmessagesresponse = oldmessagesresponse.data
+            oldmessagesresponse = oldmessagesresponse.reverse()
+            console.log(oldmessagesresponse)
+            let oldmessages = []
+            if(oldmessagesresponse.length===0)
+            {
+                setHasmore(false);
+                return
+            }
+            else if(oldmessagesresponse.length===1)
+            {
+                oldmessages.push({
+                    user: oldmessagesresponse[0].author.name,
+                    text: oldmessagesresponse[0].content,
+                    avatar: oldmessagesresponse[0].author.avatar,
+                })
+                setHasmore(false);
+                return;
+            }
+            oldmessagesresponse.forEach((element, index) => {
+            if (index===0)
+            {
+                setLastid(element._id)
+            }
+            else 
+            {
+                oldmessages.push({
+                    user: element.author.name,
+                    text: element.content,
+                    avatar: element.author.avatar,
+                })
+            }
+            });
+            setNewmessage('load');
+            setMessages([...oldmessages, ...messages]);
+        }
+        if(firstLoad===true)
+        {firstload(); setFirstload(true)}
+    },[firstLoad])
 
     useEffect(()=>{
         socket.on('roomData', (roomdata)=>{
@@ -59,49 +104,15 @@ const Chat = (props) => {
 
     }
 
-    let loadOldmessages_firstload = () => {
-        let oldmessagesresponse = getOldmessages_firstload(room, 10)
-        console.log(oldmessagesresponse);
-        let oldmessages = []
-        if(oldmessagesresponse.length===0)
-        {
-            setHasmore(false);
-            return
-        }
-        else if(oldmessagesresponse.length===1)
-        {
-            oldmessages.push({
-                user: oldmessagesresponse[0].author.name,
-                text: oldmessagesresponse[0].content,
-                avatar: oldmessagesresponse[0].author.avatar,
-            })
-            setHasmore(false);
-            return;
-        }
-        oldmessagesresponse.forEach((element, index) => {
-            if (index===0)
-            {
-                setLastid(element._id)
-            }
-            else 
-            {
-                oldmessages.push({
-                    user: element.author.name,
-                    text: element.content,
-                    avatar: element.author.avatar,
-                })
-            }
-        });
-        setMessages([...oldmessages, ...messages]);
-        setNewmessage(false);
-        console.log(messages)
-    }
 
-    let loadOldmessages = () => {
+    let loadOldmessages = async function fetcholdmessages() {
         let oldmessages = []
         if(hasmore===true)
         {
-            let oldmessagesresponse = getOldmessages(room, 5, lastid).oldMessages
+            let oldmessagesresponse = await axios.get(`https://youtube-chatroom2.appspot.com/rooms/${room}/messages?num=${5}&start_id=${lastid}`).then(response=>{return response.data})
+            oldmessagesresponse = oldmessagesresponse.data
+            oldmessagesresponse = oldmessagesresponse.reverse()
+            console.log(oldmessagesresponse)
             if(oldmessagesresponse.length===0)
             {
                 setHasmore(false);
@@ -110,9 +121,9 @@ const Chat = (props) => {
             else if(oldmessagesresponse.length===1)
             {
                 oldmessages.push({
-                    user: oldmessagesresponse[0].author,
+                    user: oldmessagesresponse[0].author.name,
                     text: oldmessagesresponse[0].content,
-                    avatar: oldmessagesresponse[0].avatar,
+                    avatar: oldmessagesresponse[0].author.avatar,
                 })
                 setHasmore(false);
                 return;
@@ -125,27 +136,25 @@ const Chat = (props) => {
                 else 
                 {
                     oldmessages.push({
-                        user: element.author,
+                        user: element.author.name,
                         text: element.content,
-                        avatar: element.avatar,
+                        avatar: element.author.avatar,
                     })
                 }
             });
         }
         else{return;}
+        setNewmessage('load');
         setMessages([...oldmessages, ...messages]);
-        setNewmessage(false);
         console.log(messages)
     }
 
 
     return (
-        <div className="outerContainer">
-            <div className="container">
-                <InfoBar room={room}/>
-                <Messages messages={messages} name={name}  loadOldmessages={loadOldmessages} newmessage={newmessage} avatar={avatar}/>
-                <Input message={message} sendMessage={sendMessage} setMessage={setMessage}/>
-            </div>
+        <div className="container">
+            <InfoBar room={room}/>
+            <Messages messages={messages} name={name}  loadOldmessages={loadOldmessages} newmessage={newmessage} avatar={avatar}/>
+            <Input message={message} sendMessage={sendMessage} setMessage={setMessage}/>
         </div>
     )
 }

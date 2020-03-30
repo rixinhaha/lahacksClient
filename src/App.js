@@ -40,8 +40,8 @@ function App() {
   {
     torender = (
       <div>
-        {/* <Chat name={Cookies.get('name')} room={Cookies.get('room')} avatar={Cookies.get('profile_picture')}  setPopout={setPopout}/> */}
-        <Chat name={Cookies.get('name')} room={Cookies.get('room')} avatar={'https://lh4.googleusercontent.com/-jd7DdQQExt8/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOi3jZFNGblsQvf-cydxNFPj125Bg/photo.jpg'}  setPopout={setPopout}/>
+        <Chat name={Cookies.get('name')} room={Cookies.get('room')} avatar={Cookies.get('profile_picture')} />
+        {/* <Chat name={Cookies.get('name')} room={Cookies.get('room')} avatar={'https://lh4.googleusercontent.com/-jd7DdQQExt8/AAAAAAAAAAI/AAAAAAAAAAA/AAKWJJOi3jZFNGblsQvf-cydxNFPj125Bg/photo.jpg'}  setPopout={setPopout}/> */}
       </div>
     )
   }

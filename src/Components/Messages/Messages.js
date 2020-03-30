@@ -8,7 +8,7 @@ const Messages = (props) => {
   let myRef=React.createRef();
   useEffect(()=>{
     console.log(props.newmessage)
-    if(props.newmessage===true)
+    if(props.newmessage==='new')
     {
       var div = myRef.current;
       div.scrollTop = div.scrollHeight-div.clientHeight;
@@ -17,7 +17,6 @@ const Messages = (props) => {
 
   let handleScroll = (e) => {
     var element = e.target;
-    console.log(element.scrollTop)
     if (element.scrollTop===0)
     {
       props.loadOldmessages()
